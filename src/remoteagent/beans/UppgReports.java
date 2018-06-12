@@ -11,11 +11,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.Query;
 import static remoteagent.beans.AgentBase.dbData;
 
 /**
@@ -26,6 +26,120 @@ public class UppgReports extends AgentBase{
     private boolean shiftStarted;
     private int shift, prevShift;
     private Date prevActDate = new Date();
+    
+    private void createAct(){
+        
+    }
+    
+    private void createCounters(){
+        
+    }
+    
+    private void createDensity20(){
+        
+    }
+    
+    private void createSirie(){
+        
+    }
+    
+    private void createOtgToTsp(){
+        
+    }
+    
+    private void createOtgToUppg(){
+        
+    }
+    
+    private void createDrainTank(){
+        
+    }
+    
+    private void createFeedWater(){
+        
+    }
+    
+    private void createSirieMixing(){
+        
+    }
+    
+    private long getNewActId(){
+        long id=0;
+        return id;        
+    }
+    
+    private long getNewSirieId(long actID){
+        long id=0;
+        return id;        
+    }
+    
+    private long getNewSirieMixingId(long actID){
+        long id=0;
+        return id;        
+    }
+    
+    private long getNewOtgToTspId(long actID){
+        long id=0;
+        return id;        
+    }
+    
+    private long getNewOtgToUPPGId(long actID){
+        long id=0;
+        return id;        
+    }
+    
+    private long getNewDensity20Id(long actID){
+        long id=0;
+        return id;        
+    }
+    
+    private long getNewCountersId(long actID){
+        long id=0;
+        return id;        
+    }
+    
+    private long getNewDrainId(long actID){
+        long id=0;
+        return id;        
+    }
+    
+    private long getNewFeedWaterId(long actID){
+        long id=0;
+        return id;        
+    }
+    
+    private BigDecimal getTagValue(String date, int shift, String tag_name){        
+        BigDecimal value=BigDecimal.ZERO;
+        try {
+            Statement stmt = dbData.db.createStatement();
+            String query = "SELECT tag_value FROM dbo.counters_daq WHERE daq_dt = :'"+date+"' AND shift = :"+String.valueOf(shift)+" AND tag_name = :'"+tag_name+"'";
+            ResultSet rs = stmt.executeQuery(query);
+            if (rs.next()){
+                value = rs.getBigDecimal(1);
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(UppgReports.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return value;
+    }
+    
+    private BigDecimal getDensity20(Double density, Double temperature){
+        BigDecimal density20=BigDecimal.ZERO;
+        try {
+            
+            String str = "SELECT plotn20 FROM v_plotn20 WHERE plotn like '"+String.format("%.3f", density).replace(",", ".")+"%' AND temper_name = "+String.format("%d", Math.round(temperature));
+            Statement stmt = dbData.db.createStatement();
+            ResultSet rs = stmt.executeQuery(str);
+            if (rs.next()){
+                density20 = BigDecimal.valueOf(Double.parseDouble(rs.getString(1).replace(",", ".")));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UppgReports.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return density20;
+    }
     
     @Override
     public void doTask(){
