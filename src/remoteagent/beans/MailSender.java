@@ -33,12 +33,12 @@ import remoteagent.lib.SimaticAddressParser;
  * @author yura_
  */
 public class MailSender extends AgentBase{
-    private final String USER_NAME = "yuraprogrammer1979";  // GMail user name (just the part before "@gmail.com")
-    private final String PASSWORD = "qnxneutrino632"; // GMail password
-    private final String RECIPIENT = "kulik@asutm.com";
+    private String USER_NAME;
+    private String PASSWORD;
+    private String RECIPIENT;
     String from;
     String pass;
-    String[] to = { RECIPIENT }; // list of recipient email addresses
+    String[] to;
     String subject;
     String body;
 
@@ -46,14 +46,13 @@ public class MailSender extends AgentBase{
     private SimaticAddressParser tags[];
     private BooleanTag plcTags[];
     private NodeList paramList;
-    private NodeList plcList;        
+    private NodeList plcList;
+    private NodeList addresses;
+    private NodeList senders;
     private boolean oldAlarm, newAlarm;
     
     public MailSender() {
-        this.body = "Alarm Parameter Message!";
-        this.subject = "Gas Pressure Now Is Alarm";
-        this.pass = PASSWORD;
-        this.from = USER_NAME;
+        
     }
         
     @Override
@@ -96,6 +95,22 @@ public class MailSender extends AgentBase{
                 Node nameAttrib = attributes.getNamedItem("name");
                 plc[i] = new JPlcAgent(plcAttrib.getNodeValue(), nameAttrib.getNodeValue(), i+1);
             }
+            senders = doc.getElementsByTagName("Sender");
+            Node sender = senders.item(0);
+            NamedNodeMap senderAttr = sender.getAttributes();
+            USER_NAME = senderAttr.getNamedItem("name").getNodeValue();
+            PASSWORD = senderAttr.getNamedItem("password").getNodeValue();
+            this.pass = PASSWORD;
+            this.from = USER_NAME;
+            
+            addresses = doc.getElementsByTagName("Reciever");
+            to = new String[addresses.getLength()];
+            for (int i=0; i<addresses.getLength(); i++){
+                NamedNodeMap attributes = addresses.item(i).getAttributes();
+                Node nameAttrib = attributes.getNamedItem("name");
+                to[i] = nameAttrib.getNodeValue();
+            }
+            
         } catch (SAXException | IOException ex) {
             Logger.getLogger(DAQ_And_Store.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -106,6 +121,8 @@ public class MailSender extends AgentBase{
         while (true){
             newAlarm = isAlarm();
             if (true == newAlarm!=oldAlarm){
+                this.body = "Аварийное значение давления газа!!!";
+                this.subject = "Авария процесса";
                 sendFromGMail(from, pass, to, subject, body);
                 oldAlarm=newAlarm;
             }    
@@ -143,8 +160,8 @@ public class MailSender extends AgentBase{
                 message.addRecipient(Message.RecipientType.TO, toAddress[i]);
             }
 
-            message.setSubject(subject);
-            message.setText(body);
+            message.setSubject(subject, "UTF-8");
+            message.setText(body, "UTF-8");
             Transport transport = session.getTransport("smtp");
             transport.connect(host, from, pass);
             transport.sendMessage(message, message.getAllRecipients());
