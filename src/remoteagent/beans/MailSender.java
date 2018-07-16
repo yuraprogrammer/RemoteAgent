@@ -41,7 +41,9 @@ public class MailSender extends AgentBase{
     String[] to;
     String subject;
     String body;
-
+    String host;
+    String port;
+    
     private JPlcAgent plc[];
     private SimaticAddressParser tags[];
     private BooleanTag plcTags[];
@@ -100,6 +102,8 @@ public class MailSender extends AgentBase{
             NamedNodeMap senderAttr = sender.getAttributes();
             USER_NAME = senderAttr.getNamedItem("name").getNodeValue();
             PASSWORD = senderAttr.getNamedItem("password").getNodeValue();
+            host = senderAttr.getNamedItem("host").getNodeValue();
+            port = senderAttr.getNamedItem("port").getNodeValue();
             this.pass = PASSWORD;
             this.from = USER_NAME;
             
@@ -123,7 +127,7 @@ public class MailSender extends AgentBase{
             if (true == newAlarm!=oldAlarm){
                 this.body = "Аварийное значение давления газа!!!";
                 this.subject = "Авария процесса";
-                sendFromGMail(from, pass, to, subject, body);
+                sendMail(from, pass, to, subject, body);
                 oldAlarm=newAlarm;
             }    
             try {
@@ -134,14 +138,14 @@ public class MailSender extends AgentBase{
         }
     }
     
-    private void sendFromGMail(String from, String pass, String[] to, String subject, String body) {
+    private void sendMail(String from, String pass, String[] to, String subject, String body) {
         Properties props = System.getProperties();
-        String host = "smtp.gmail.com";
+        
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.user", from);
         props.put("mail.smtp.password", pass);
-        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.port", port);
         props.put("mail.smtp.auth", "true");
 
         Session session = Session.getDefaultInstance(props);

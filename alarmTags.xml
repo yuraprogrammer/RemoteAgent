@@ -27,7 +27,8 @@
 		<!--PlcTag name="Volume_Total_2.Value" plcName="PLC_KR3" S7Addr="DB3.DBD60" minValue="0" maxValue="100000"/-->
 		<!--PlcTag name="Mass_Inventory_2.Value" plcName="PLC_KR3" S7Addr="DB3.DBD64" minValue="0" maxValue="100000"/-->
     </Addresses>
-	<Sender name="yuraprogrammer1979" password="qnxneutrino632"/>
+	<Sender name="yuraprogrammer1979" password="qnxneutrino632" host="smtp.gmail.com" port="587"/>
 	<Reciever name="kulik@asutm.com"/>
 	<Reciever name="yuraprogrammer1979@gmail.com"/>
+	<Reciever name="alexprom5@gmail.com"/>
 </configuration>
