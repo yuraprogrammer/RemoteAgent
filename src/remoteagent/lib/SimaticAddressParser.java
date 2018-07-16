@@ -14,6 +14,15 @@ public final class SimaticAddressParser {
     private int startAddress;
     private int byteCnt;
     private String address;
+    private int bitNum;
+
+    public int getBitNum() {
+        return bitNum;
+    }
+
+    public void setBitNum(int bitNum) {
+        this.bitNum = bitNum;
+    }
     
     public SimaticAddressParser(){
         
@@ -100,6 +109,11 @@ public final class SimaticAddressParser {
                         }
                         //setDbNum(Integer.parseInt(s));
                         switch (s){
+                            case "DBX":{
+                                byteCount = 1;
+                                parseBitNum(addressString);
+                                break;
+                            }
                             case "DBB":{
                                 byteCount = 1;
                                 break;
@@ -126,18 +140,45 @@ public final class SimaticAddressParser {
     
     public void parseStartByte(String addressString){
         if (plcArea==Nodave.DB){
-            String s = addressString.substring(2);
+            String s=addressString;
             CharSequence ss = ".";
-            for (int i=0; i<s.length(); i++){
-                String dbNumber;
-                if (s.charAt(i)==ss.toString().charAt(0)){
-                    int index = i;                    
-                    s = s.substring(index+4, s.length());
-                    setStartAddress(Integer.parseInt(s));
-                    break;
-                }
+            for (int j=0; j<2; j++){
+                for (int i=0; i<s.length(); i++){                                        
+                    if (s.charAt(i)==ss.toString().charAt(0)){
+                        int index = i;
+                        if (j==0){
+                            s = s.substring(index+4);
+                        }
+                        if (j==1){
+                            s = s.substring(0, index);
+                        }                        
+                        break;
+                    }
+                }            
             }
-            
+            setStartAddress(Integer.parseInt(s));
+        }
+    }
+    
+    public void parseBitNum(String addressString){
+        if (plcArea==Nodave.DB){
+            String s=addressString;
+            CharSequence ss = ".";
+            for (int j=0; j<2; j++){
+                for (int i=0; i<s.length(); i++){                                        
+                    if (s.charAt(i)==ss.toString().charAt(0)){
+                        int index = i;
+                        if (j==0){
+                            s = s.substring(index+4);
+                        }
+                        if (j==1){
+                            s = s.substring(index+1, s.length());
+                        }                        
+                        break;
+                    }
+                }            
+            }
+            setBitNum(Integer.parseInt(s));
         }
     }
     

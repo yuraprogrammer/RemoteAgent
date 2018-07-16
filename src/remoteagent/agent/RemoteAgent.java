@@ -33,6 +33,7 @@ import remoteagent.beans.DAQ_And_Store;
 import remoteagent.beans.ExcelAlarmReport;
 import remoteagent.beans.ExcelReport;
 import remoteagent.beans.LevelToVolume;
+import remoteagent.beans.MailSender;
 import remoteagent.beans.OilAccount;
 import remoteagent.beans.ProductAccount;
 import remoteagent.beans.TSP_Account;
@@ -55,6 +56,7 @@ public class RemoteAgent {
     private static TSP_Account ta;
     private static DAQ_And_Store daq;
     private static CountersReport cr;
+    private static MailSender ms;
     private static RemoteAgent singleton;
     private static Thread ltvThread;
     private static Thread oaThread;
@@ -67,6 +69,7 @@ public class RemoteAgent {
     private static Thread taThread;
     private static Thread daqThread;
     private static Thread crThread;
+    private static Thread msThread;
     private static List<ServerNode> servers;
     private ObjectName[] objName;
     private RemoteMethodRunner[] agent;
@@ -85,6 +88,7 @@ public class RemoteAgent {
             daq = new DAQ_And_Store();
             daq.taskDelay = 10000;
             cr = new CountersReport();
+            ms = new MailSender();
             ObjectName mLTV = new ObjectName ("agent.remoteagent:type=LevelToVolume");
             //ObjectName mOA = new ObjectName ("agent.remoteagent:type=OilAccount");
             //ObjectName mPA = new ObjectName ("agent.remoteagent:type=ProductAccount");
@@ -95,6 +99,7 @@ public class RemoteAgent {
             ObjectName mTA = new ObjectName ("agent.remoteagent:type=TSP_Account");
             ObjectName mDAQ = new ObjectName ("agent.remoteagent:type=DAQ_And_Store");
             ObjectName mCR = new ObjectName ("agent.remoteagent:type=CountersReport");
+            ObjectName mMS = new ObjectName ("agent.remoteagent:type=MailSender");
             getMBeanServer().registerMBean(ltv, mLTV);
             //getMBeanServer().registerMBean(oa, mOA);
             //getMBeanServer().registerMBean(pa, mPA);
@@ -105,6 +110,7 @@ public class RemoteAgent {
             getMBeanServer().registerMBean(ta, mTA);
             getMBeanServer().registerMBean(daq, mDAQ);
             getMBeanServer().registerMBean(cr, mCR);
+            getMBeanServer().registerMBean(ms, mMS);
             ltvThread = new Thread(ltv);
             ltvThread.setPriority(Thread.MIN_PRIORITY);
             //oaThread = new Thread(oa);
@@ -125,6 +131,8 @@ public class RemoteAgent {
             daqThread.setPriority(Thread.NORM_PRIORITY);
             crThread = new Thread(cr);
             crThread.setPriority(Thread.NORM_PRIORITY);
+            msThread = new Thread(ms);
+            msThread.setPriority(Thread.MIN_PRIORITY);
         } catch (MalformedObjectNameException | InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException ex) {
             Logger.getLogger(RemoteAgent.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -260,6 +268,9 @@ public class RemoteAgent {
                 }
                 if (module.equals("CountersReport")) {
                     crThread.start();
+                }
+                if (module.equals("MailSender")) {
+                    msThread.start();
                 }
             }
             

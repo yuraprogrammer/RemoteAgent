@@ -119,6 +119,24 @@ public class JPlcAgent{
         return plcVal;
     }                
 
+    public boolean readBooleanData(int numDB, int startOffset, int bit){
+        boolean result=false;
+        byte[] by;
+        int res = dc.readBytes(Nodave.DB, numDB, startOffset, 1, null);
+        byte[] bytes = new byte[1];
+        bytes[0] = (byte)dc.getBYTE();
+        boolean[] bits=new boolean[8];
+        for (int i=0; i<8; i++){
+            if ((bytes[i / 8] & (1 << (7 - (i % 8)))) > 0){
+                bits[i] = true;
+                if ((7-i)==bit){
+                    result=true;
+                }
+            }
+        }
+        return result;
+    }
+    
     public byte readIntData(int area, int numDB, int startOffset, int cnt){
         int res=-1;
         byte[] by;
