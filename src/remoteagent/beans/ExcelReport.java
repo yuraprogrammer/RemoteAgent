@@ -43,12 +43,12 @@ public class ExcelReport extends AgentBase{
         try {
             Statement stmt = dbConfig.db.createStatement();
             ResultSet rs;
-            rs = stmt.executeQuery("select PROP_VALUE from viewLevelTags where VAR_CLASS=0 and name=4");
+            rs = stmt.executeQuery("select PROP_VALUE from viewLevelTags where VAR_CLASS=0 and name=4 ORDER BY NODE");
             while (rs.next()){
                 archieveTags.add(rs.getString(1));                
             }
             rs.close();
-            rs = stmt.executeQuery("select PROP_VALUE from viewLevelTags where VAR_CLASS=7 and name=4");
+            rs = stmt.executeQuery("select PROP_VALUE from viewLevelTags where VAR_CLASS=7 and name=4 ORDER BY NODE");
             while (rs.next()){
                 archieveTagsDesc.add(rs.getString(1));                
             }
