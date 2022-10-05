@@ -124,7 +124,7 @@ public class CountersReport extends AgentBase{
                 HSSFWorkbook wb = new HSSFWorkbook();
                 HSSFCellStyle headerCellStyle = wb.createCellStyle();
                 HSSFFont headerFont = wb.createFont();
-                headerFont.setBold(true);                
+                headerFont.setBoldweight(Short.parseShort("0"));
                 headerCellStyle.setBorderBottom(CellStyle.BORDER_MEDIUM);
                 headerCellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
                 headerCellStyle.setBorderLeft(CellStyle.BORDER_MEDIUM);
@@ -134,7 +134,7 @@ public class CountersReport extends AgentBase{
                 headerCellStyle.setBorderTop(CellStyle.BORDER_MEDIUM);
                 headerCellStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
                 headerCellStyle.setFont(headerFont);                
-                headerCellStyle.setAlignment(HorizontalAlignment.CENTER_SELECTION);
+                //headerCellStyle.setAlignment(HorizontalAlignment.CENTER_SELECTION);
                 
                 String fileName = "Counters_"+dateFormat.format(reportDate);
                 
@@ -277,7 +277,7 @@ public class CountersReport extends AgentBase{
                 
                     wb.write(fileOut);
                     System.out.println("Making report file "+fileName+".xls complete");                    
-                    wb.close();
+                    //wb.close();
                     fileOut.close();
                 } catch (IOException ex) {
                     Logger.getLogger(CountersReport.class.getName()).log(Level.SEVERE, null, ex);

@@ -1,1 +1,1 @@
-java -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -jar dist\remoteagent.jar remoteagent.ui.Main
+java -jar reset-tool.en.v1.2.45019.20121109.2143.jar
